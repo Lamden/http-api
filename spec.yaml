@@ -1,0 +1,347 @@
+openapi: 3.0.0
+info:
+  title: Lamden HTTP API
+  version: 0.1.0
+  description: The Official HTTP API for interacting with the Lamden blockchain. HTTP requests hit Masternode webservers. This specification is subject to change.
+  contact:
+    name: Lamden Team
+    email: team@lamden.io
+    url: http://lamden.io
+servers:
+  - url: https://masternode01.anarchynet.io/
+  - url: https://masternode02.anarchynet.io/
+  - url: https://masternode03.anarchynet.io/
+  - url: https://masternode04.anarchynet.io/
+paths:
+  /:
+    post:
+      tags:
+        - transaction submission
+      description: todo
+      parameters:
+        - name: transaction
+          in: query
+          required: true
+          description: todo
+          schema:
+            type: string
+      responses:
+        '200':
+          description: todo
+          content:
+            application/json:
+              schema:
+                description: subscription information
+                required:
+                  - success
+                  - nonce
+                  - hash
+                properties:
+                  success:
+                    description: this unique identifier allows management of the subscription
+                    type: string
+                    example: Transaction successfully submitted to the network.
+                  nonce:
+                    description: todo
+                    type: string
+                    example: todo
+                  hash:
+                    description: todo
+                    type: string
+                    example: todo
+        '503':
+          description: Network Overload
+          content:
+            application/json:
+              schema:
+                description: blah
+                required:
+                  - error
+                properties:
+                  error:
+                    type: string
+                    example: Queue full! Cannot process any more requests
+        '400':
+          description: Bad Transaction
+          content:
+            application/json:
+              schema:
+                description: blah
+                required:
+                  - error
+                properties:
+                  error:
+                    type: string
+  /nonce:
+    get:
+      tags:
+        - transaction submission
+      description: todo
+      parameters:
+        - name: verifyingKey
+          in: header
+          required: true
+          description: todo
+          schema:
+            properties:
+              verifyingKey:
+                type: string
+      responses:
+        '200':
+          description: todo
+          content:
+            application/json:
+              schema:
+                description: subscription information
+                required:
+                  - success
+                  - nonce
+                properties:
+                  success:
+                    description: this unique identifier allows management of the subscription
+                    type: string
+                    example: True
+                  nonce:
+                    description: todo
+                    type: string
+                    example: todo
+        '400':
+          description: No Verifying Key Supplied
+          content:
+            application/json:
+              schema:
+                description: blah
+                required:
+                  - error
+                properties:
+                  error:
+                    type: string
+                    example: you must supply the key 'verifyingKey' in the json payload
+  
+  /contracts:
+    get:
+      tags:
+        - contracts
+      responses:
+        '200':
+          description: todo
+          content:
+            application/json:
+              schema:
+                description: subscription information
+                properties:
+                  contracts:
+                    description: this unique identifier allows management of the subscription
+                    type: array
+                    items:
+                      type: string
+                      example: currency
+  /contracts/{contract}:
+    get:
+      tags:
+        - contracts
+      description: todo
+      parameters:
+        - name: contract
+          in: path
+          description: Name of an existing smart contract.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Metadata of the smart contract for further inquiry.
+          content:
+            application/json:
+              schema:
+                description: subscription information
+                properties:
+                  code_str:
+                    description: The Python code string.
+                    type: string
+                    example: print('hello world')
+                  resources:
+                    description: todo
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          example: balances
+                        type:
+                          type: string
+                          example: Num
+                  methods:
+                    description: todo
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          example: transfer
+                        arguments:
+                          type: string
+                          example: 
+                          - to
+                          - amount
+                  author:
+                    description: Public key of the issuer of the contract.
+                    type: string
+                    example: 324ee2e3544a8853a3c5a0ef0946b929aa488cbe7e7ee31a0fef9585ce398502
+                  timestamp:
+                    description: Original time of contract submission.
+                    type: number
+                    example: 1551207713.4534113407
+  /contracts/{contract}/{resource}:
+    get:
+      tags:
+        - contracts
+      description: todo
+      parameters:
+        - name: contract
+          in: path
+          description: Name of an existing smart contract.
+          required: true
+          schema:
+            type: string
+        - name: resource
+          in: path
+          description: Name of a resource on the contract.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Metadata of the smart contract for further inquiry.
+          content:
+            application/json:
+              schema:
+                description: subscription information
+                properties:
+                  cursor:
+                    description: The Redis cursor which is used to pagination/
+                    type: number
+                    example: 11
+                  keys:
+                    description: List of keys for the initial page of resources
+                    type: string
+                    example:
+                    - 20da05fdba92449732b3871cc542a058075446fedb41430ee882e99f9091cc4d
+                    - 409ced999b7fcf63e747651d47f8ddd7349322e14730c7e1b8bf742e7bcb5039
+  /contracts/{contract}/{resource}/{key}:
+    get:
+      tags:
+        - contracts
+      description: todo
+      parameters:
+        - name: contract
+          in: path
+          description: Name of an existing smart contract.
+          required: true
+          schema:
+            type: string
+        - name: resource
+          in: path
+          description: Name of a resource on the contract.
+          required: true
+          schema:
+            type: string
+        - name: key
+          in: path
+          description: Key of the resource.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Metadata of the smart contract for further inquiry.
+          content:
+            application/json:
+              schema:
+                description: subscription information
+                properties:
+                  value:
+                    description: todo
+                    type: string
+                    example: "11000"
+  
+  /latest_block:
+    get:
+      tags:
+        - blocks
+      description: todo
+      responses:
+        '200':
+          description: todo
+          content:
+            application/json:
+              schema:
+                description: subscription information
+                properties:
+                  hash:
+                    description: this unique identifier allows management of the subscription
+                    type: string
+                    example: 4caaefe198602e8fa7ec0844eda8fc378c906627b52763f5f6f25c79bcda6f15
+  
+  /transaction:
+    post:
+      tags:
+      - transactions
+      description: todo
+      parameters:
+        - name: hash
+          in: query
+          required: true
+          description: todo
+          schema:
+            type: string
+      responses:
+        '200':
+          description: todo
+          content:
+            application/json:
+              schema:
+                description: subscription information
+                properties:
+                  status:
+                    description: this unique identifier allows management of the subscription
+                    type: string
+                    example: SUCC
+                  state:
+                    type: string
+                    example: "SET currency:balances:20da05fdba92449732b3871cc542a058075446fedb41430ee882e99f9091cc4d 9987968000;SET currency:balances:LamdenReserves 407464;SET currency:balances:20da05fdba92449732b3871cc542a058075446fedb41430ee882e99f9091cc4d 9987958000;SET currency:balances:409ced999b7fcf63e747651d47f8ddd7349322e14730c7e1b8bf742e7bcb5039 10000;"
+                  contractType:
+                    type: number
+                    example: 37924
+  /transactions:
+    post:
+      tags:
+      - transactions
+      description: Get all transactions given a block hash.
+      parameters:
+        - name: hash
+          in: query
+          required: true
+          description: The hash of the block you want to query.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: todo
+          content:
+            application/json:
+              schema:
+                description: subscription information
+                properties:
+                  status:
+                    description: this unique identifier allows management of the subscription
+                    type: string
+                    example: SUCC
+                  state:
+                    type: string
+                    example: null
+                  contractType:
+                    type: number
+                    example: 37924
